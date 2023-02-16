@@ -9,7 +9,6 @@ import { Starbucks } from "./models/starbucks.model.js";
 
 async function startCrawling() {
   // 옵션 : headless : true 눈에 안나타남 false 눈에 보임
-  const coffeeobj = {};
   const coffeeNameList = [];
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();

@@ -35,7 +35,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.status(200).send("Hello World!");
 });
 
 // 회원 가입
@@ -139,11 +139,11 @@ app.get("/starbucks", async (req, res) => {
 });
 
 // 로컬 몽고 디비 접속 - test local
-mongooes.set("strictQuery", false);
-mongooes.connect("mongodb://127.0.0.1:27017/mini");
+// mongooes.set("strictQuery", false);
+// mongooes.connect("mongodb://127.0.0.1:27017/mini");
 
 // // 네임 리졸루션 사용
-// mongooes.connect('mongodb://my-database:27017/mini')
+mongooes.connect('mongodb://my-database:27017/mini')
 
 app.listen(port, () => {
   console.log(`mini-project BackEnd listening on port ${port}`);
