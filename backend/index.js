@@ -2,6 +2,10 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import { options } from "./swagger/config.js";
+
 import mongooes from "mongoose";
 
 import { Token } from "./models/token.model.js";
@@ -13,15 +17,12 @@ import openGraph from "./scraping.js";
 import customRegistrationNumber from "./personal.js";
 import sendTemplateToEmail from "./email.js";
 import { Starbucks } from "./models/starbucks.model.js";
-
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// swagger 설정
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc(options)));
 
 // cors 설정
 app.use(
@@ -33,8 +34,13 @@ app.use(
   ])
 );
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 // 회원 가입
-app.post("/user", async (req, res) => {
+app.post("/users", async (req, res) => {
+  console.log("post users");
   // name, email, personal(주민번호), prefer(사이트), pwd, phone를 서버에 함꼐 보내주어야 함.
   const { name, email, personal, prefer, pwd, phone } = req.body;
   // 입력 받은 Tokens 문서를 검색해 해당 번호의 isAuth가 true인지 확인
@@ -117,7 +123,7 @@ app.patch("/tokens/phone", async (req, res) => {
 
   let token = await Token.findOne({ phone: myphone });
   if (!token || token.token !== mytoken) {
-    res.send(false);
+    res.status(422).send(false);
   } else {
     token.isAuth = true;
     token.save();
@@ -132,13 +138,13 @@ app.get("/starbucks", async (req, res) => {
   res.send(menu);
 });
 
-// 몽고 디비 접속 - test local
+// 로컬 몽고 디비 접속 - test local
 mongooes.set("strictQuery", false);
 mongooes.connect("mongodb://127.0.0.1:27017/mini");
 
 // // 네임 리졸루션 사용
-// mongooes.connect('mongodb://my-database:27017/mydocker03')
+// mongooes.connect('mongodb://my-database:27017/mini')
 
 app.listen(port, () => {
-  console.log(`mini-project BackEnd listening on port ${3000}`);
+  console.log(`mini-project BackEnd listening on port ${port}`);
 });

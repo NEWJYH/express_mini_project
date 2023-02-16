@@ -51,7 +51,7 @@ const submitSignup = async () => {
   const personal = `${regi1}-${regi2}`;
   const phone = first + second + third;
 
-  await axios.post("http://localhost:3000/user", {
+  await axios.post("http://localhost:3000/users", {
     name,
     email,
     prefer,
